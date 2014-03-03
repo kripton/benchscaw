@@ -243,17 +243,6 @@
             android:layout_gravity="center_horizontal"
             android:drawableLeft="@android:drawable/ic_menu_revert"
             android:text="@string/restart" />
-
-        <com.google.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="12dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="a1515cea05d4fd5"
-            ads:loadAdOnCreate="true"
-            ads:testDevices="TEST_EMULATOR, 95FEECDFA309A37419EF8467ADA04831"
-            android:gravity="center_horizontal" />
     </LinearLayout>
 
 </ScrollView>

@@ -79,38 +79,5 @@ public class StartActivity extends Activity {
  			}
  
 		});
-		
-		((Button)findViewById(R.id.donateButton)).setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				donate();
- 			}
-		});
 	}
-	
-	private void donate() {
-	    AlertDialog donateDialog =new AlertDialog.Builder(this) 
-        //set message, title, and icon
-        .setTitle("Donate") 
-        .setMessage("Donate Bitcoins to 12fgdL5zLjmh55EKastWuXuDCY6tsXBYAe to help support this app") 
-        .setIcon(R.drawable.ic_menu_star)
-
-        .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) { 
-                dialog.dismiss();  		
-            }   
-        })
-
-        .setNegativeButton("Copy address", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-            	dialog.dismiss();
-				ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
-				clipboard.setText("12fgdL5zLjmh55EKastWuXuDCY6tsXBYAe");
-		        Toast.makeText(StartActivity.this, "Address copied to clipboard", Toast.LENGTH_SHORT).show();
-            }
-        })
-        .create();
-	    donateDialog.show();		
-	}
-
-
 }
