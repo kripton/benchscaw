@@ -62,9 +62,6 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 	public native boolean getCpuX86MOVBE();
 	public native int getCpuCount();
 	public native String ffmpegCpuFlags();
-	public native String vpxOpen(String path, int w, int h, int threads);
-	public native String vpxNextFrame(String path, int w, int h);
-	public native String vpxClose(String path);
 
 	public boolean showResults=false;
 	static {
@@ -83,7 +80,7 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 
 	//private boolean useMediaCodec;
 	private Method method;
-	private enum Method{mediacodec, ffmpeg, libvpxencode, notest};
+	private enum Method{mediacodec, ffmpeg, notest};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -176,8 +173,6 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 			method.setText(getResources().getString(R.string.usingMediaCodec));
 		else if(this.method==Method.ffmpeg)
 			method.setText(getResources().getString(R.string.usingFFMPEG));
-		else if(this.method==Method.libvpxencode)
-			method.setText(getResources().getString(R.string.usingLibvpxEncoder));
 		else if(this.method==Method.notest)
 			method.setText(getResources().getString(R.string.usingNoTest));
 		Button button = (Button)findViewById(R.id.buttonCopy);
@@ -248,7 +243,8 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 		surfaceView.setLayoutParams(lp);  
 
 		surfaceHolder = surfaceView.getHolder();
-		surfaceHolder.setFormat(PixelFormat.RGBA_8888);		//surfaceHolder.setFixedSize(clips[0].width, clips[0].height);
+		surfaceHolder.setFormat(PixelFormat.RGBA_8888);
+		//surfaceHolder.setFixedSize(clips[0].width, clips[0].height);
 		//setSurfaceSize();
 		surfaceHolder.addCallback(this);
 
@@ -259,8 +255,6 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 			method=Method.mediacodec;
 		else if(intent.getStringExtra("ws.websca.benchscaw.use").equals("ffmpeg"))
 			method=Method.ffmpeg;
-		else if(intent.getStringExtra("ws.websca.benchscaw.use").equals("libvpxencode"))
-			method=Method.libvpxencode;
 		else if(intent.getStringExtra("ws.websca.benchscaw.use").equals("notest")) {
 			method=Method.notest;
 			surfaceHolder.removeCallback(this);
@@ -270,13 +264,7 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 	
 	@Override
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
-		if(method==Method.libvpxencode) {
-			SurfaceView s = (SurfaceView)findViewById(R.id.surfaceview);
-			s.setVisibility(View.GONE);
-			TextView t = (TextView)findViewById(R.id.encoderLog);
-			t.setVisibility(View.VISIBLE);
-			
-		}		playNextClip();
+		playNextClip();
 	}
 
 	public void surfaceCreated(SurfaceHolder h) {}
@@ -326,8 +314,6 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 					r=r+"&method=mediacodec";
 				else if(method==Method.ffmpeg)
 					r=r+"&method=ffmpeg";
-				else if(method==Method.libvpxencode)
-					r=r+"&method=libvpxencode";
 				else if(method==Method.notest)
 					r=r+"&method=notest";
 				r=r+"&codec=" + URLEncoder.encode(codec, "UTF-8");
@@ -427,16 +413,11 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 			r=r+"Using MediaCodec\n";
 		else if(method==Method.ffmpeg)
 			r=r+"Using FFMPEG\n";
-		else if(method==Method.libvpxencode)
-			r=r+"Using libvpx encoder\n";
 		r=r+"Avalible Codecs: "+codecs+"\n";
 		r=r+"Codec: "+codec+"\n";
 		for(int x=0; x<clips.length; x++) {
 			r=r+"Clip: "+clips[x].name;
-			if(method==Method.libvpxencode)
-				r=r+" encoded ";
-			else
-				r=r+" played ";
+			r=r+" played ";
 			r=r+clips[x].frames+" frames in "+clips[x].totalTime+"ms";
 			r=r+" = "+clips[x].fps+"FPS";
 			r=r+"\n";
@@ -535,38 +516,6 @@ public class MainActivity extends Activity implements Callback, OnErrorListener,
 			ffmpegClose();
 			codec="ffmpeg";
 			codecs="ffmpeg";
-		}
-		else if(method == Method.libvpxencode) {
-
-            MainActivity.this.runOnUiThread(new Runnable() {
-            	public void run() {
-        			((TextView)findViewById(R.id.encoderLog)).setText("Encoding 200 frames ("+
-            	MainActivity.this.clips[MainActivity.this.currentClip].width+"x"+
-            	MainActivity.this.clips[MainActivity.this.currentClip].height+")\n");
-            	}
-            });
-
-			Log.d("Benchscaw", "Using libvpxendode");
-			String path = this.getCacheDir().getAbsolutePath()+"/"+clips[currentClip].filename+".ivf";
-			vpxOpen(path, clips[currentClip].width, clips[currentClip].height, getCpuCount());
-			String s = new String();
-			for(int x=0; x<200; x++) {
-				s += vpxNextFrame(path, clips[currentClip].width, clips[currentClip].height);
-				//Slow GUI updates to stop it hogging CPU
-				if(System.currentTimeMillis()%10==0) {
-					final String o = s; 
-		            MainActivity.this.runOnUiThread(new Runnable() {
-		            	public void run() {
-		        			((TextView)findViewById(R.id.encoderLog)).append(o);
-		            	}
-		            });
-		            s="";
-				}
-				frames++;
-			}
-			vpxClose(path);
-			//TODO let the user copy these to the sdcard?
-			new File(path).delete();
 		}
 
 		if(frames!=0) {

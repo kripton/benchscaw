@@ -1,8 +1,5 @@
 package ws.websca.benchscaw;
 
-
-
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -37,6 +34,7 @@ public class StartActivity extends Activity {
 
 	public void onStart() {
 		super.onStart();
+
 		Button FFMPEGbutton = (Button)findViewById(R.id.FFMPEGButton);
 		FFMPEGbutton.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -44,8 +42,7 @@ public class StartActivity extends Activity {
  			  intent.putExtra("ws.websca.benchscaw.use", "ffmpeg");
 			  startActivity(intent);
  			}
- 
-		});
+ 		});
 		
 		Button MediaCodecButton = (Button)findViewById(R.id.mediaCodecButton);
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN){
@@ -56,18 +53,7 @@ public class StartActivity extends Activity {
  			  Intent intent = new Intent(StartActivity.this, MainActivity.class);
  			  intent.putExtra("ws.websca.benchscaw.use", "mediacodec");
 			  startActivity(intent);
- 			}
- 
-		});
-		
-		Button LibvpxEncodeButton = (Button)findViewById(R.id.libvpxEncodeButton);
-		LibvpxEncodeButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
- 			  Intent intent = new Intent(StartActivity.this, MainActivity.class);
- 			  intent.putExtra("ws.websca.benchscaw.use", "libvpxencode");
-			  startActivity(intent);
- 			}
- 
+ 			} 
 		});
 		
 		Button noTestButton = (Button)findViewById(R.id.noTestButton);
@@ -77,7 +63,6 @@ public class StartActivity extends Activity {
  			  intent.putExtra("ws.websca.benchscaw.use", "notest");
 			  startActivity(intent);
  			}
- 
 		});
 	}
 }

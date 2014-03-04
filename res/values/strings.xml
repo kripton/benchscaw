@@ -23,8 +23,6 @@
     <string name="usingFFMPEG">Using FFMPEG</string>
     <string name="usingMediaCodec">Using MediaCodec</string>
     <string name="send">Send results to websca.ws</string>
-    <string name="startLibvpxEncode">Test encoding using libvpx</string>
-    <string name="usingLibvpxEncoder">Using libvpx encoder</string>
     <string name="usingNoTest">Device Information Only</string>
     <string name="noTest">Show device information only</string>
     <string name="donate">Donate</string>
